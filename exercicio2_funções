@@ -1,0 +1,10 @@
+def imprime_nome(nome) :
+    print('Nome:', nome)
+    # sem return explicito
+
+resultado = imprime_nome('Ana')
+print(resultado)
+
+# Saida:
+# nome: Ana
+# None
