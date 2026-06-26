@@ -1,0 +1,14 @@
+
+
+def linhas():
+    print('+----------------------+')
+
+def opçao(texto):
+    print(f'| {texto:<20} |')
+menu = ['Usuários', 'Clientes', 'Fornecedores', ' Relatórios']
+
+for item in menu:
+    linhas()
+    opçao(item)
+
+linhas()
