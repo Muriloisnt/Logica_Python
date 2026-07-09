@@ -1,0 +1,13 @@
+def menu():
+    print("\nMenu:")
+    print("0 - Adicionar filme (opcional)")
+    print("1 - Quantidade total de filmes")
+    print("2 - Informações de um filme pelo titulo")
+    print("3 - Filmes de um diretor especifico")
+    print("4 - Filmes de um genero especifico")
+    print("5 - Média de direção dos filmes")
+    print("6 - Sair")
+    
+    while True:
+        menu()
+        

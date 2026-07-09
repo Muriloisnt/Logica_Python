@@ -1,0 +1,18 @@
+titulo: O poderoso chefao
+ano: 1972
+diretor: francis ford coppola
+geero: crime, drama
+duraçao: 175 minutos
+
+titulo: interlestrelar
+ano: 2014
+diretor: christopher nolan
+genero: ficçao cientifica,aventura
+duraçao:169 minutos
+
+titulo: 2001 - uma odisseia no espaço
+ano: 1968
+diretor: stanley kubrick
+genero: ficçao cientifica
+duraçao: 142 minutos
+
