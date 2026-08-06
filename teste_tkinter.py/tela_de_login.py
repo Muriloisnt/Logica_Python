@@ -4,6 +4,17 @@ janela = tk.Tk()
 janela.title("Tela de Login")
 janela.geometry("300x250")
 
+label_login = tk.Label(
+    janela,
+    text="Faça seu login",
+    font=("Arial", 24, "bold"))
+
+
+
+
+
+
+label_login.pack()
 
 label_usuario = tk.Label(
     janela,
@@ -28,3 +39,5 @@ entrada_senha = tk.Entry(janela)
 entrada_senha.pack()
 
 janela.mainloop()
+
+
