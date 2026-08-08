@@ -5,7 +5,7 @@ root = tk.Tk()
 root.title("SENAI - Sistemas")
 root.geometry("800x600")
 
-minha_imagem = tk.PhotoImage(file="minha-imagem.png")
+minha_imagem = tk.PhotoImage(file="perfil.png")
 
 tk.Label(root, image=minha_imagem)
 
