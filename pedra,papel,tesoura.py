@@ -1,8 +1,10 @@
 # import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+import random
  # pip install Pillow
 from PIL import Image, ImageTk
+
 
 #cores------------------------------
 cor0 = '#FFFFFF' #white / branca 
@@ -13,10 +15,14 @@ cor4 = '#34eb3d' #green / verde
 cor5 = '#e85151' #red / vermlha 
 fundo = '#3b3b3b'
 
+
+
 janela = Tk()
 janela.title('pedra, papel e tesoura')
 janela.geometry('260x280')
 janela.configure(bg=fundo)
+
+                                                                                  
 
 frame_cima = Frame(janela, width=260, height=100, bg=cor1, relief='raised')
 frame_cima.grid(row=0, column=0, sticky=NW)
@@ -55,7 +61,7 @@ app_pc_linha = Label(frame_cima, text="", height=10, anchor="center", bg=cor4,
 app_pc_linha.place(x=255, y=0)
 #pontuaçao
 app_pc_pontos = Label(frame_cima, text="0", height=1, anchor="center",
-                      bg=cor1, fg=cor0, font=("Ivy 1 bold"))
+                      bg=cor1, fg=cor0, font=("Ivy 30 bold"))
 app_pc_pontos.place(x=170, y=20)
 
 #barra de empate
@@ -63,16 +69,105 @@ app_empate = Label(frame_cima, text="",width=255, anchor="center",
                    bg=cor3, fg=cor0, font=("Ivy 1 bold"))
 app_empate.place(x=0,y=95)
 
-#configurando o frame baixo
-icone_pedra = Image.open("./images/pedra.png")
-icone_pedra = icone_pedra.resize((50, 50),
-                                 Image.Resampling.LANCZOS)
-icone_pedra = ImageTk.PhotoImage(icone_pedra)
-btn_pedra = Button(frame_baixo, width=50, height=50,
-                   image=icone_pedra, bg=cor0, fg=cor0,
-                   compound="center", font=("Ivy 10 bold"),
-                   anchor="center", relief="flat")
-btn_pedra.place(x=15, y=60)
+#mostra jogada do pc
+app_jogada_pc = Label(frame_baixo, text="", height=1, anchor="center",
+                      bg=cor0, fg=cor1, font=("Ivy 10 bold"))
+app_jogada_pc.place(x=190, y=10)
+
+#mostra jogada do jogador
+app_jogada_pessoa = Label(frame_baixo, text="", height=1, anchor="center",
+                          bg=cor0, fg=cor1, font=("Ivy 10 bold"))
+app_jogada_pessoa.place(x=10, y=10)
+
+app_vencedor = Label(frame_baixo, text="", height=1, anchor="center",
+                     bg=cor0, fg=cor1, font=("Ivy 10 bold"))
+app_vencedor.palce(x=5, y=60)
+
+global escola_pessoa
+global escolha_pc
+global pessoa_pontos
+global pontos_pc
+global rodadas
+pontos_pessoa = 0
+pontos_pc = 0
+rodadas = 5
+
+#funçaõ logica do jogo
+def jogar (jogada):
+    global pontos_pc
+    global pontos_pessoa
+    global rodadas
+    opçoes = ["pedra", "papel", "tesoura"]
+
+
+    app_pessoa_linha["bg"] = cor1
+    app_pc_linha["bg"] = cor1
+    app_empate["bg"] = cor0
+
+    
+
+    def terminar_jogo():
+        pass
+
+    if rodadas > 0:
+        print(rodadas)
+        escolha_pc = random.choice(opçoes)
+        app_jogada_pc["text"] = escolha_pc
+
+        escolha_pessoa = jogada
+        app_jogada_pessoa["text"] = escolha_pessoa
+        print(escolha_pessoa, escolha_pc)
+        #tempo 1:03:26
+    else:
+        terminar_jogo()               
+
+
+#iniciando função
+def iniciar_jogo ():
+    global icone_tesoura
+    global icone_papel
+    global icone_pedra
+    global btn_tesoura
+    global btn_pedra
+    global btn_papel
+
+
+
+    icone_pedra = Image.open("pedra.png")
+    icone_pedra = icone_pedra.resize((50, 50),
+                                    Image.Resampling.LANCZOS)
+    icone_pedra = ImageTk.PhotoImage(icone_pedra)
+    btn_pedra = Button(frame_baixo, width=50, height=50,
+                    image=icone_pedra, bg=cor0, fg=cor0,
+                    compound="center", font=("Ivy 10 bold"),
+                    anchor="center", relief="flat", command=lambda: jogar("pedra"))
+    btn_pedra.place(x=25, y=60)
+
+    icone_papel = Image.open("papel.png")
+    icone_papel = icone_papel.resize((50, 50),
+                                    Image.Resampling.LANCZOS)
+    icone_papel = ImageTk.PhotoImage(icone_papel)
+    btn_papel = Button(frame_baixo, width=50, height=50,
+                    image=icone_papel, bg=cor0, fg=cor0,
+                    compound="center", font=("Ivy 10 bold"),
+                    anchor="center", relief="flat", command=lambda: jogar("papel"))
+    btn_papel.place(x=100, y=60)
+
+    icone_tesoura = Image.open("tesoura.png")
+    icone_tesoura = icone_tesoura.resize((50, 50),
+                                        Image.Resampling.LANCZOS)
+    icone_tesoura = ImageTk.PhotoImage(icone_tesoura)
+    btn_tesoura = Button(frame_baixo, width=50, height=50,
+                        image=icone_tesoura, bg=cor0, fg=cor0,
+                        compound="center", font=("Ivy 10 bold"),
+                        anchor="center", relief="flat", command=lambda: jogar ("tesoura"))
+    btn_tesoura.place(x=170, y=60)
+
+
+btn_jogar = Button(frame_baixo,text="Jogar", width= 40, height=2,
+                   anchor="center", bg=cor1,
+                   fg=cor0, command=iniciar_jogo)
+btn_jogar.place(x=0, y=140)
 
 
 
