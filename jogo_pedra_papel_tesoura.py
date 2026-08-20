@@ -667,6 +667,7 @@ def iniciar_jogo():
   
     btn_jogar.config(
         text='Novo Jogo'
+    
     )
 
 # BOTÃO JOGAR
