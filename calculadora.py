@@ -89,6 +89,4 @@ por_resistencia = tk.Checkbutton(
 
 
 
-
-
 janela.mainloop()

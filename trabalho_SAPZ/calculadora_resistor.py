@@ -1,512 +1,714 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+
 
 
 cores = {
-    "Preto": "black",
-    "Marrom": "brown",
-    "Vermelho": "red",
-    "Laranja": "orange",
-    "Amarelo": "yellow",
-    "Verde": "green",
-    "Azul": "blue",
-    "Violeta": "purple",
-    "Cinza": "gray",
-    "Branco": "white"
+    "preto": 0,
+    "marrom": 1,
+    "vermelho": 2,
+    "laranja": 3,
+    "amarelo": 4,
+    "verde": 5,
+    "azul": 6,
+    "violeta": 7,
+    "cinza": 8,
+    "branco": 9
 }
-
-
-valores = {
-    "Preto": 0,
-    "Marrom": 1,
-    "Vermelho": 2,
-    "Laranja": 3,
-    "Amarelo": 4,
-    "Verde": 5,
-    "Azul": 6,
-    "Violeta": 7,
-    "Cinza": 8,
-    "Branco": 9
-}
-
 
 multiplicadores = {
-    "Preto": 1,
-    "Marrom": 10,
-    "Vermelho": 100,
-    "Laranja": 1000,
-    "Amarelo": 10000,
-    "Verde": 100000,
-    "Azul": 1000000,
-    "Violeta": 10000000,
-    "Cinza": 100000000,
-    "Branco": 1000000000
+    "preto": 1,
+    "marrom": 10,
+    "vermelho": 100,
+    "laranja": 1000,
+    "amarelo": 10000,
+    "verde": 100000,
+    "azul": 1000000,
+    "violeta": 10000000,
+    "cinza": 100000000,
+    "branco": 1000000000,
+    "dourado": 0.1,
+    "prateado": 0.01
 }
-
 
 tolerancias = {
-    "Marrom": 1,
-    "Vermelho": 2,
-    "Dourado": 5,
-    "Prateado": 10
+    "marrom": 1,
+    "vermelho": 2,
+    "verde": 0.5,
+    "azul": 0.25,
+    "violeta": 0.1,
+    "cinza": 0.05,
+    "dourado": 5,
+    "prateado": 10
 }
+
+
+cores_visuais = {
+    "preto": "#111111",
+    "marrom": "#6B3E1E",
+    "vermelho": "#EF2027",
+    "laranja": "#F39C12",
+    "amarelo": "#F1D32F",
+    "verde": "#2E9952",
+    "azul": "#2676B5",
+    "violeta": "#813FA8",
+    "cinza": "#888888",
+    "branco": "#F4F4F4",
+    "dourado": "#D4A72C",
+    "prateado": "#BDBDBD"
+}
+
+
+
+
+def formatar_resistencia(valor):
+    """Converte o valor para Ω, kΩ ou MΩ."""
+
+    if valor >= 1000000:
+        return f"{valor / 1000000:.2f} MΩ"
+
+    elif valor >= 1000:
+        return f"{valor / 1000:.2f} kΩ"
+
+    else:
+        return f"{valor:.2f} Ω"
+
+
+def pegar_cor(numero):
+    
+
+    for cor, valor in cores.items():
+        if valor == numero:
+            return cor
+
+    return None
+
 
 
 
 janela = tk.Tk()
 
-janela.title("Calculadora de Resistores")
-janela.geometry("900x700")
+janela.title("Calculadora de Resistor")
+
+# Tamanho parecido com o exemplo
+janela.geometry("760x650")
+
+janela.resizable(False, False)
+
+janela.configure(
+    bg="#EAF2F7"
+)
+
 
 
 titulo = tk.Label(
     janela,
-    text="Calculadora de Resistores",
-    font=("Arial", 20)
+    text="Calculadora de Resistor",
+    font=("Arial", 20, "bold"),
+    fg="#263E53",
+    bg="#EAF2F7"
 )
 
-titulo.pack(pady=15)
+titulo.place(
+    x=45,
+    y=35
+)
 
 
-
-modo = tk.StringVar(value="cor")
-
-
-tk.Label(
+painel = tk.Frame(
     janela,
-    text="Escolha como deseja calcular:",
-    font=("Arial", 12)
-).pack()
+    bg="white"
+)
+
+painel.place(
+    x=35,
+    y=80,
+    width=690,
+    height=540
+)
 
 
-frame_modo = tk.Frame(janela)
-frame_modo.pack(pady=10)
+
+grupo_modo = tk.LabelFrame(
+    painel,
+    text="Como deseja informar o resistor?",
+    font=("Arial", 10, "bold"),
+    fg="#263B4A",
+    bg="white",
+    bd=1,
+    relief="groove"
+)
+
+grupo_modo.place(
+    x=15,
+    y=15,
+    width=660,
+    height=65
+)
 
 
-tk.Radiobutton(
-    frame_modo,
-    text="Escolher pelas cores",
-    variable=modo,
-    value="cor",
-    command=lambda: mudar_modo()
-).grid(row=0, column=0, padx=15)
+modo = tk.StringVar()
+
+modo.set("cores")
 
 
-tk.Radiobutton(
-    frame_modo,
-    text="Informar valor da resistência",
+radio_valor = tk.Radiobutton(
+    grupo_modo,
+    text="Valor da resistência",
     variable=modo,
     value="valor",
-    command=lambda: mudar_modo()
-).grid(row=0, column=1, padx=15)
-
-
-
-frame = tk.Frame(janela)
-frame.pack(pady=5)
-
-
-cor1 = tk.StringVar(value="Marrom")
-cor2 = tk.StringVar(value="Preto")
-cor3 = tk.StringVar(value="Vermelho")
-cor4 = tk.StringVar(value="Dourado")
-
-
-tk.Label(
-    frame,
-    text="1ª faixa"
-).grid(row=0, column=0)
-
-
-combo1 = ttk.Combobox(
-    frame,
-    textvariable=cor1,
-    values=list(cores.keys()),
-    state="readonly",
-    width=12
+    command=lambda: mudar_modo(),
+    bg="white",
+    activebackground="white",
+    font=("Arial", 9)
 )
 
-combo1.grid(row=1, column=0, padx=5)
-
-
-tk.Label(
-    frame,
-    text="2ª faixa"
-).grid(row=0, column=1)
-
-
-combo2 = ttk.Combobox(
-    frame,
-    textvariable=cor2,
-    values=list(cores.keys()),
-    state="readonly",
-    width=12
+radio_valor.place(
+    x=10,
+    y=23
 )
 
-combo2.grid(row=1, column=1, padx=5)
 
-
-tk.Label(
-    frame,
-    text="Multiplicador"
-).grid(row=0, column=2)
-
-
-combo3 = ttk.Combobox(
-    frame,
-    textvariable=cor3,
-    values=list(cores.keys()),
-    state="readonly",
-    width=12
+radio_cores = tk.Radiobutton(
+    grupo_modo,
+    text="Cores do resistor",
+    variable=modo,
+    value="cores",
+    command=lambda: mudar_modo(),
+    bg="white",
+    activebackground="white",
+    font=("Arial", 9)
 )
 
-combo3.grid(row=1, column=2, padx=5)
+radio_cores.place(
+    x=145,
+    y=23
+)
+
+frame_cores = tk.Frame(
+    painel,
+    bg="white"
+)
+
+frame_cores.place(
+    x=20,
+    y=95,
+    width=650,
+    height=75
+)
+
+
 
 
 tk.Label(
-    frame,
-    text="Tolerância"
-).grid(row=0, column=3)
+    frame_cores,
+    text="Banda 1:",
+    font=("Arial", 9),
+    fg="#34495E",
+    bg="white"
+).place(
+    x=5,
+    y=0
+)
+
+banda1 = ttk.Combobox(
+    frame_cores,
+    values=list(cores.keys()),
+    state="readonly",
+    width=14
+)
+
+banda1.place(
+    x=5,
+    y=23
+)
 
 
-combo4 = ttk.Combobox(
-    frame,
-    textvariable=cor4,
+
+
+tk.Label(
+    frame_cores,
+    text="Banda 2:",
+    font=("Arial", 9),
+    fg="#34495E",
+    bg="white"
+).place(
+    x=140,
+    y=0
+)
+
+banda2 = ttk.Combobox(
+    frame_cores,
+    values=list(cores.keys()),
+    state="readonly",
+    width=14
+)
+
+banda2.place(
+    x=140,
+    y=23
+)
+
+
+
+
+tk.Label(
+    frame_cores,
+    text="Multiplicador:",
+    font=("Arial", 9),
+    fg="#34495E",
+    bg="white"
+).place(
+    x=275,
+    y=0
+)
+
+multiplicador = ttk.Combobox(
+    frame_cores,
+    values=list(multiplicadores.keys()),
+    state="readonly",
+    width=14
+)
+
+multiplicador.place(
+    x=275,
+    y=23
+)
+
+
+
+tk.Label(
+    frame_cores,
+    text="Tolerância:",
+    font=("Arial", 9),
+    fg="#34495E",
+    bg="white"
+).place(
+    x=410,
+    y=0
+)
+
+tolerancia_cores = ttk.Combobox(
+    frame_cores,
     values=list(tolerancias.keys()),
     state="readonly",
-    width=12
+    width=14
 )
 
-combo4.grid(row=1, column=3, padx=5)
+tolerancia_cores.place(
+    x=410,
+    y=23
+)
 
 
 
-frame_valor = tk.Frame(janela)
+
+frame_valor = tk.Frame(
+    painel,
+    bg="white"
+)
+
+
 
 
 tk.Label(
     frame_valor,
-    text="Digite o valor da resistência:",
-    font=("Arial", 12)
-).pack(pady=5)
-
+    text="Valor da resistência (Ω):",
+    font=("Arial", 9),
+    fg="#34495E",
+    bg="white"
+).place(
+    x=5,
+    y=0
+)
 
 entrada_valor = tk.Entry(
     frame_valor,
-    font=("Arial", 14),
-    justify="center",
-    width=20
+    width=21,
+    font=("Arial", 10)
 )
 
-entrada_valor.pack(pady=5)
+entrada_valor.place(
+    x=5,
+    y=23,
+    height=25
+)
+
 
 
 tk.Label(
     frame_valor,
-    text="Exemplo: 470, 1000, 4700, 100000",
-    fg="gray"
-).pack()
+    text="Tolerância:",
+    font=("Arial", 9),
+    fg="#34495E",
+    bg="white"
+).place(
+    x=190,
+    y=0
+)
+
+tolerancia_valor = ttk.Combobox(
+    frame_valor,
+    values=list(tolerancias.keys()),
+    state="readonly",
+    width=14
+)
+
+tolerancia_valor.place(
+    x=190,
+    y=23
+)
+
+
+
+
+label_resultado = tk.Label(
+    painel,
+    text="Digite o valor da resistência ou selecione as cores.",
+    font=("Arial", 10, "bold"),
+    fg="#20384D",
+    bg="white"
+)
+
+label_resultado.place(
+    x=20,
+    y=215
+)
 
 
 
 canvas = tk.Canvas(
-    janela,
-    width=600,
-    height=200,
-    bg="white"
+    painel,
+    width=630,
+    height=250,
+    bg="#F7F9FA",
+    highlightthickness=1,
+    highlightbackground="#D5DDE3"
 )
 
-canvas.pack(pady=20)
+canvas.place(
+    x=20,
+    y=245
+)
 
 
-def desenhar():
+
+def desenhar_resistor(faixas=None):
 
     canvas.delete("all")
 
-    
-    canvas.create_line(
-        50, 100,
-        180, 100,
-        width=4
-    )
-
-
-    canvas.create_rectangle(
-        180, 60,
-        480, 140,
-        fill="beige",
-        outline="black"
-    )
-
-    
-    canvas.create_line(
-        480, 100,
-        550, 100,
-        width=4
-    )
-
-    canvas.create_rectangle(
-        220, 60,
-        245, 140,
-        fill=cores.get(cor1.get(), "black"),
-        outline="black"
-    )
-
-    canvas.create_rectangle(
-        270, 60,
-        295, 140,
-        fill=cores.get(cor2.get(), "black"),
-        outline="black"
-    )
-
   
-    canvas.create_rectangle(
-        320, 60,
-        345, 140,
-        fill=cores.get(cor3.get(), "black"),
-        outline="black"
-    )
 
-    cor_tolerancia = {
-        "Marrom": "brown",
-        "Vermelho": "red",
-        "Dourado": "gold",
-        "Prateado": "silver"
-    }
-
-    canvas.create_rectangle(
-        420, 60,
-        445, 140,
-        fill=cor_tolerancia.get(
-            cor4.get(),
-            "gold"
-        ),
-        outline="black"
-    )
-
-
-
-
-
-def formatar_valor(valor):
-
-    if valor < 1000:
-
-        return f"{valor:g} Ω"
-
-    elif valor < 1000000:
-
-        return f"{valor / 1000:g} kΩ"
-
-    else:
-
-        return f"{valor / 1000000:g} MΩ"
-
-
-
-def valor_para_cores(valor):
-
-    # Verifica se é inteiro
-    if valor != int(valor):
-        return None
-
-    valor = int(valor)
-
-    if valor <= 0:
-        return None
-
-
-    multiplicador = 0
-    numero = valor
-
-    while numero >= 100:
-
-        if numero % 10 != 0:
-            break
-
-        numero //= 10
-        multiplicador += 1
-
-    
-    while numero >= 100:
-
-        if numero % 10 != 0:
-            return None
-
-        numero //= 10
-        multiplicador += 1
-
-    primeiro = numero // 10
-    segundo = numero % 10
-
-    if primeiro > 9 or segundo > 9:
-        return None
-
-  
-    cor_multiplicador = None
-
-    for cor, mult in multiplicadores.items():
-
-        if mult == 10 ** multiplicador:
-
-            cor_multiplicador = cor
-            break
-
-    if cor_multiplicador is None:
-        return None
-
-
-    cor_primeiro = None
-    cor_segundo = None
-
-    for cor, valor_cor in valores.items():
-
-        if valor_cor == primeiro:
-            cor_primeiro = cor
-
-        if valor_cor == segundo:
-            cor_segundo = cor
-
-    return (
-        cor_primeiro,
-        cor_segundo,
-        cor_multiplicador
-    )
-
-
-
-def calcular_por_cor():
-
-    primeiro = valores[cor1.get()]
-
-    segundo = valores[cor2.get()]
-
-    multiplicador = multiplicadores[cor3.get()]
-
-    tolerancia = tolerancias.get(
-        cor4.get(),
-        20
-    )
-
-    valor = (
-        primeiro * 10 + segundo
-    ) * multiplicador
-
-    texto = formatar_valor(valor)
-
-    resultado.config(
-        text=f"Resistência: {texto} ± {tolerancia}%"
-    )
-
-    desenhar()
-
-
-
-def calcular_por_valor():
-
-    try:
-
-        
-        texto = entrada_valor.get().replace(",", ".")
-
-        valor = float(texto)
-
-        if valor <= 0:
-            resultado.config(
-                text="Digite um valor maior que zero."
-            )
-            return
-
-        cores_resultado = valor_para_cores(valor)
-
-        if cores_resultado is None:
-
-            resultado.config(
-                text="Esse valor não pode ser representado "
-                     "com 3 faixas."
-            )
-
-            return
-
-        primeira, segunda, multiplicador = cores_resultado
-
-  
-        cor1.set(primeira)
-        cor2.set(segunda)
-        cor3.set(multiplicador)
-
-        cor4.set("Dourado")
-
-        resultado.config(
-            text=f"Resistência: {formatar_valor(valor)} ± 5%"
+    if faixas is None:
+
+        canvas.create_text(
+            315,
+            125,
+            text="Aguarde a seleção do modo",
+            font=("Arial", 10),
+            fill="#888888"
         )
 
-        desenhar()
+        return
 
-    except ValueError:
 
-        resultado.config(
-            text="Digite um valor válido."
+
+    canvas.create_text(
+        315,
+        35,
+        text="Resistor de 4 faixas",
+        font=("Arial", 14, "bold"),
+        fill="#202020"
+    )
+
+  
+
+    canvas.create_line(
+        0,
+        120,
+        130,
+        120,
+        fill="#777777",
+        width=6
+    )
+
+   
+
+    canvas.create_line(
+        500,
+        120,
+        630,
+        120,
+        fill="#777777",
+        width=6
+    )
+
+  
+
+    canvas.create_rectangle(
+        130,
+        90,
+        500,
+        150,
+        fill="#F1E3B8",
+        outline="#6D5B39",
+        width=2
+    )
+
+
+
+    posicoes = [190, 250, 310, 370]
+
+    for i in range(4):
+
+        cor = faixas[i]
+
+        canvas.create_rectangle(
+            posicoes[i],
+            91,
+            posicoes[i] + 18,
+            149,
+            fill=cores_visuais[cor],
+            outline="#555555",
+            width=1
         )
 
+        canvas.create_text(
+            posicoes[i] + 9,
+            185,
+            text=cor.capitalize(),
+            font=("Arial", 9),
+            fill="#333333"
+        )
 
-
-def calcular():
-
-    if modo.get() == "cor":
-
-        calcular_por_cor()
-
-    else:
-
-        calcular_por_valor()
-
-
-botao = tk.Button(
-    janela,
-    text="CALCULAR",
-    command=calcular,
-    font=("Arial", 11, "bold"),
-    width=15
-)
-
-botao.pack(pady=5)
-
-
-
-
-resultado = tk.Label(
-    janela,
-    text="Resistência: 1000 Ω ± 5%",
-    font=("Arial", 14)
-)
-
-resultado.pack(pady=15)
 
 
 
 def mudar_modo():
 
-    if modo.get() == "cor":
+    # Primeiro esconde tudo
+    frame_cores.place_forget()
+    frame_valor.place_forget()
 
-        frame.pack(pady=5)
-        frame_valor.pack_forget()
+    if modo.get() == "cores":
 
-        resultado.config(
-            text="Escolha as cores e clique em CALCULAR."
+        
+        frame_cores.place(
+            x=20,
+            y=95,
+            width=650,
+            height=75
+        )
+
+        botao.config(
+            text="Calcular resistência"
         )
 
     else:
 
-        frame.pack_forget()
-        frame_valor.pack(pady=5)
-
-        resultado.config(
-            text="Digite o valor e clique em CALCULAR."
+        
+        frame_valor.place(
+            x=20,
+            y=95,
+            width=650,
+            height=75
         )
 
+        botao.config(
+            text="Calcular cores"
+        )
+
+    label_resultado.config(
+        text="Digite o valor da resistência ou selecione as cores."
+    )
+
+    desenhar_resistor(None)
 
 
-desenhar()
+
+def calcular_resistencia():
+
+    cor1 = banda1.get()
+    cor2 = banda2.get()
+    cor_mult = multiplicador.get()
+    cor_tol = tolerancia_cores.get()
+
+    if not cor1 or not cor2 or not cor_mult or not cor_tol:
+
+        messagebox.showwarning(
+            "Atenção",
+            "Selecione todas as cores do resistor."
+        )
+
+        return
+
+    primeiro_numero = cores[cor1]
+    segundo_numero = cores[cor2]
+
+    valor_multiplicador = multiplicadores[cor_mult]
+    valor_tolerancia = tolerancias[cor_tol]
+
+    resistencia = (
+        primeiro_numero * 10 + segundo_numero
+    ) * valor_multiplicador
+
+    resultado = formatar_resistencia(resistencia)
+
+    label_resultado.config(
+        text=f"Resistência: {resultado} ±{valor_tolerancia}%"
+    )
+
+    desenhar_resistor([
+        cor1,
+        cor2,
+        cor_mult,
+        cor_tol
+    ])
+
+
+
+def calcular_cores():
+
+    texto = entrada_valor.get().strip()
+
+    if texto == "":
+
+        messagebox.showwarning(
+            "Atenção",
+            "Digite o valor da resistência."
+        )
+
+        return
+
+    try:
+
+        valor = float(
+            texto.replace(",", ".")
+        )
+
+    except ValueError:
+
+        messagebox.showerror(
+            "Erro",
+            "Digite somente números.\n\nExemplo: 3300"
+        )
+
+        return
+
+    if valor <= 0:
+
+        messagebox.showwarning(
+            "Atenção",
+            "O valor deve ser maior que zero."
+        )
+
+        return
+
+    cor_tolerancia = tolerancia_valor.get()
+
+    if not cor_tolerancia:
+
+        messagebox.showwarning(
+            "Atenção",
+            "Selecione a tolerância."
+        )
+
+        return
+
+    valor_tolerancia = tolerancias[cor_tolerancia]
+
+    encontrou = False
+
+ 
+
+    for cor_mult, valor_mult in multiplicadores.items():
+
+        numero = valor / valor_mult
+
+        if 10 <= numero <= 99:
+
+            numero = round(numero)
+
+            if abs((numero * valor_mult) - valor) < 0.000001:
+
+                primeiro = numero // 10
+                segundo = numero % 10
+
+                cor1 = pegar_cor(primeiro)
+                cor2 = pegar_cor(segundo)
+
+                if cor1 and cor2:
+
+                    encontrou = True
+                    break
+
+    if not encontrou:
+
+        messagebox.showerror(
+            "Erro",
+            "Esse valor não pode ser representado "
+            "com um resistor de 4 faixas."
+        )
+
+        return
+
+    resultado = formatar_resistencia(valor)
+
+    label_resultado.config(
+        text=f"Resistência: {resultado} ±{valor_tolerancia}%"
+    )
+
+    desenhar_resistor([
+        cor1,
+        cor2,
+        cor_mult,
+        cor_tolerancia
+    ])
+
+
+
+def calcular():
+
+    if modo.get() == "cores":
+
+        calcular_resistencia()
+
+    else:
+
+        calcular_cores()
+
+
+botao = tk.Button(
+    painel,
+    text="Calcular resistência",
+    command=calcular,
+    bg="#4DB3A5",
+    fg="white",
+    activebackground="#3E988D",
+    activeforeground="white",
+    font=("Arial", 10, "bold"),
+    relief="flat",
+    cursor="hand2",
+    padx=10,
+    pady=5
+)
+
+botao.place(
+    x=20,
+    y=175
+)
+
+
+
+banda1.set("vermelho")
+banda2.set("vermelho")
+multiplicador.set("laranja")
+tolerancia_cores.set("violeta")
+
+tolerancia_valor.set("dourado")
+
+
+desenhar_resistor(None)
+
 
 janela.mainloop()
