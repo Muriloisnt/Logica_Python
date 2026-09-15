@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 
-
+# Dicionário com o valor numérico de cada cor
 cores = {
     "preto": 0,
     "marrom": 1,
@@ -16,6 +16,7 @@ cores = {
     "branco": 9
 }
 
+# Dicionário com os valores dos multiplicadores
 multiplicadores = {
     "preto": 1,
     "marrom": 10,
@@ -31,6 +32,7 @@ multiplicadores = {
     "prateado": 0.01
 }
 
+# Dicionário com os valores de tolerância
 tolerancias = {
     "marrom": 1,
     "vermelho": 2,
@@ -42,7 +44,7 @@ tolerancias = {
     "prateado": 10
 }
 
-
+# Códigos de cores usados para desenhar as faixas
 cores_visuais = {
     "preto": "#111111",
     "marrom": "#6B3E1E",
@@ -59,48 +61,52 @@ cores_visuais = {
 }
 
 
-
-
+# Converte o valor para uma unidade mais fácil de visualizar
 def formatar_resistencia(valor):
     """Converte o valor para Ω, kΩ ou MΩ."""
 
+    # Valores acima de 1 MΩ são mostrados em megaohms
     if valor >= 1000000:
         return f"{valor / 1000000:.2f} MΩ"
 
+    # Valores acima de 1 kΩ são mostrados em quiloohms
     elif valor >= 1000:
         return f"{valor / 1000:.2f} kΩ"
 
+    # Valores menores permanecem em ohms
     else:
         return f"{valor:.2f} Ω"
 
 
+# Procura no dicionário qual cor possui determinado número
 def pegar_cor(numero):
-    
 
     for cor, valor in cores.items():
         if valor == numero:
             return cor
 
+    # Retorna None caso o número não seja encontrado
     return None
 
 
-
-
+# Cria a janela principal do programa
 janela = tk.Tk()
 
 janela.title("Calculadora de Resistor")
 
-# Tamanho parecido com o exemplo
+# Define o tamanho inicial da janela
 janela.geometry("760x650")
 
+# Impede que o usuário altere o tamanho da janela
 janela.resizable(False, False)
 
+# Define a cor de fundo
 janela.configure(
     bg="#EAF2F7"
 )
 
 
-
+# Título principal da aplicação
 titulo = tk.Label(
     janela,
     text="Calculadora de Resistor",
@@ -115,6 +121,7 @@ titulo.place(
 )
 
 
+# Painel branco que contém os elementos da aplicação
 painel = tk.Frame(
     janela,
     bg="white"
@@ -128,7 +135,7 @@ painel.place(
 )
 
 
-
+# Grupo responsável pela escolha do modo de cálculo
 grupo_modo = tk.LabelFrame(
     painel,
     text="Como deseja informar o resistor?",
@@ -147,11 +154,14 @@ grupo_modo.place(
 )
 
 
+# Guarda o modo selecionado pelo usuário
 modo = tk.StringVar()
 
+# O programa inicia no modo de cores
 modo.set("cores")
 
 
+# Opção para informar diretamente o valor da resistência
 radio_valor = tk.Radiobutton(
     grupo_modo,
     text="Valor da resistência",
@@ -169,6 +179,7 @@ radio_valor.place(
 )
 
 
+# Opção para informar as cores do resistor
 radio_cores = tk.Radiobutton(
     grupo_modo,
     text="Cores do resistor",
@@ -185,6 +196,8 @@ radio_cores.place(
     y=23
 )
 
+
+# Frame que contém os campos das cores
 frame_cores = tk.Frame(
     painel,
     bg="white"
@@ -198,8 +211,7 @@ frame_cores.place(
 )
 
 
-
-
+# Campo para selecionar a primeira faixa
 tk.Label(
     frame_cores,
     text="Banda 1:",
@@ -224,8 +236,7 @@ banda1.place(
 )
 
 
-
-
+# Campo para selecionar a segunda faixa
 tk.Label(
     frame_cores,
     text="Banda 2:",
@@ -250,8 +261,7 @@ banda2.place(
 )
 
 
-
-
+# Campo para selecionar o multiplicador
 tk.Label(
     frame_cores,
     text="Multiplicador:",
@@ -276,7 +286,7 @@ multiplicador.place(
 )
 
 
-
+# Campo para selecionar a tolerância
 tk.Label(
     frame_cores,
     text="Tolerância:",
@@ -301,16 +311,14 @@ tolerancia_cores.place(
 )
 
 
-
-
+# Frame usado quando o usuário informa o valor em ohms
 frame_valor = tk.Frame(
     painel,
     bg="white"
 )
 
 
-
-
+# Campo para digitar o valor da resistência
 tk.Label(
     frame_valor,
     text="Valor da resistência (Ω):",
@@ -335,7 +343,7 @@ entrada_valor.place(
 )
 
 
-
+# Campo para escolher a tolerância do resistor
 tk.Label(
     frame_valor,
     text="Tolerância:",
@@ -360,8 +368,7 @@ tolerancia_valor.place(
 )
 
 
-
-
+# Label onde o resultado do cálculo será exibido
 label_resultado = tk.Label(
     painel,
     text="Digite o valor da resistência ou selecione as cores.",
@@ -376,7 +383,7 @@ label_resultado.place(
 )
 
 
-
+# Canvas usado para desenhar o resistor
 canvas = tk.Canvas(
     painel,
     width=630,
@@ -392,13 +399,13 @@ canvas.place(
 )
 
 
-
+# Desenha o resistor de acordo com as faixas escolhidas
 def desenhar_resistor(faixas=None):
 
+    # Limpa o desenho anterior
     canvas.delete("all")
 
-  
-
+    # Quando não há faixas, mostra uma mensagem
     if faixas is None:
 
         canvas.create_text(
@@ -412,7 +419,7 @@ def desenhar_resistor(faixas=None):
         return
 
 
-
+    # Título acima do resistor
     canvas.create_text(
         315,
         35,
@@ -421,8 +428,8 @@ def desenhar_resistor(faixas=None):
         fill="#202020"
     )
 
-  
 
+    # Desenha o terminal esquerdo
     canvas.create_line(
         0,
         120,
@@ -432,8 +439,8 @@ def desenhar_resistor(faixas=None):
         width=6
     )
 
-   
 
+    # Desenha o terminal direito
     canvas.create_line(
         500,
         120,
@@ -443,8 +450,8 @@ def desenhar_resistor(faixas=None):
         width=6
     )
 
-  
 
+    # Desenha o corpo do resistor
     canvas.create_rectangle(
         130,
         90,
@@ -456,13 +463,15 @@ def desenhar_resistor(faixas=None):
     )
 
 
-
+    # Define a posição de cada faixa
     posicoes = [190, 250, 310, 370]
 
+    # Percorre as quatro faixas
     for i in range(4):
 
         cor = faixas[i]
 
+        # Desenha a faixa com a cor selecionada
         canvas.create_rectangle(
             posicoes[i],
             91,
@@ -473,6 +482,7 @@ def desenhar_resistor(faixas=None):
             width=1
         )
 
+        # Mostra o nome da cor abaixo da faixa
         canvas.create_text(
             posicoes[i] + 9,
             185,
@@ -482,17 +492,16 @@ def desenhar_resistor(faixas=None):
         )
 
 
-
-
+# Troca os campos de acordo com o modo selecionado
 def mudar_modo():
 
-    # Primeiro esconde tudo
+    # Esconde os dois frames antes de mostrar o correto
     frame_cores.place_forget()
     frame_valor.place_forget()
 
+    # Modo para calcular a resistência pelas cores
     if modo.get() == "cores":
 
-        
         frame_cores.place(
             x=20,
             y=95,
@@ -504,9 +513,9 @@ def mudar_modo():
             text="Calcular resistência"
         )
 
+    # Modo para descobrir as cores através do valor
     else:
 
-        
         frame_valor.place(
             x=20,
             y=95,
@@ -518,21 +527,27 @@ def mudar_modo():
             text="Calcular cores"
         )
 
+
+    # Limpa o resultado anterior
     label_resultado.config(
         text="Digite o valor da resistência ou selecione as cores."
     )
 
+    # Remove o desenho atual
     desenhar_resistor(None)
 
 
-
+# Calcula a resistência usando as quatro faixas
 def calcular_resistencia():
 
+    # Obtém as cores selecionadas nos campos
     cor1 = banda1.get()
     cor2 = banda2.get()
     cor_mult = multiplicador.get()
     cor_tol = tolerancia_cores.get()
 
+
+    # Verifica se todos os campos foram preenchidos
     if not cor1 or not cor2 or not cor_mult or not cor_tol:
 
         messagebox.showwarning(
@@ -542,22 +557,33 @@ def calcular_resistencia():
 
         return
 
+
+    # Converte as duas primeiras cores para números
     primeiro_numero = cores[cor1]
     segundo_numero = cores[cor2]
 
+    # Obtém o multiplicador e a tolerância escolhidos
     valor_multiplicador = multiplicadores[cor_mult]
     valor_tolerancia = tolerancias[cor_tol]
 
+
+    # Junta os dois primeiros números e aplica o multiplicador
     resistencia = (
         primeiro_numero * 10 + segundo_numero
     ) * valor_multiplicador
 
+
+    # Formata o resultado para Ω, kΩ ou MΩ
     resultado = formatar_resistencia(resistencia)
 
+
+    # Exibe o resultado na tela
     label_resultado.config(
         text=f"Resistência: {resultado} ±{valor_tolerancia}%"
     )
 
+
+    # Atualiza o desenho com as cores escolhidas
     desenhar_resistor([
         cor1,
         cor2,
@@ -566,11 +592,14 @@ def calcular_resistencia():
     ])
 
 
-
+# Descobre as cores necessárias a partir do valor informado
 def calcular_cores():
 
+    # Pega o texto digitado e remove espaços
     texto = entrada_valor.get().strip()
 
+
+    # Verifica se o campo está vazio
     if texto == "":
 
         messagebox.showwarning(
@@ -580,6 +609,8 @@ def calcular_cores():
 
         return
 
+
+    # Tenta converter o texto para número
     try:
 
         valor = float(
@@ -588,6 +619,7 @@ def calcular_cores():
 
     except ValueError:
 
+        # Mostra erro caso o usuário digite algo inválido
         messagebox.showerror(
             "Erro",
             "Digite somente números.\n\nExemplo: 3300"
@@ -595,6 +627,8 @@ def calcular_cores():
 
         return
 
+
+    # Impede valores iguais ou menores que zero
     if valor <= 0:
 
         messagebox.showwarning(
@@ -604,8 +638,12 @@ def calcular_cores():
 
         return
 
+
+    # Obtém a tolerância escolhida
     cor_tolerancia = tolerancia_valor.get()
 
+
+    # Verifica se a tolerância foi selecionada
     if not cor_tolerancia:
 
         messagebox.showwarning(
@@ -615,33 +653,48 @@ def calcular_cores():
 
         return
 
+
     valor_tolerancia = tolerancias[cor_tolerancia]
 
+    # Indica se foi encontrada uma combinação válida
     encontrou = False
 
- 
 
+    # Testa os multiplicadores disponíveis
     for cor_mult, valor_mult in multiplicadores.items():
 
+        # Remove o multiplicador do valor informado
         numero = valor / valor_mult
 
+
+        # Um resistor de 4 faixas precisa de dois dígitos
         if 10 <= numero <= 99:
 
+            # Arredonda para obter os dois algarismos
             numero = round(numero)
 
+
+            # Confere se o valor calculado é exatamente o informado
             if abs((numero * valor_mult) - valor) < 0.000001:
 
+                # Separa o primeiro e o segundo algarismo
                 primeiro = numero // 10
                 segundo = numero % 10
 
+
+                # Converte os números novamente para cores
                 cor1 = pegar_cor(primeiro)
                 cor2 = pegar_cor(segundo)
 
+
+                # Verifica se as duas cores foram encontradas
                 if cor1 and cor2:
 
                     encontrou = True
                     break
 
+
+    # Caso nenhum conjunto de cores seja possível
     if not encontrou:
 
         messagebox.showerror(
@@ -652,12 +705,18 @@ def calcular_cores():
 
         return
 
+
+    # Formata o valor para mostrar ao usuário
     resultado = formatar_resistencia(valor)
 
+
+    # Exibe o resultado
     label_resultado.config(
         text=f"Resistência: {resultado} ±{valor_tolerancia}%"
     )
 
+
+    # Desenha as cores encontradas
     desenhar_resistor([
         cor1,
         cor2,
@@ -666,7 +725,7 @@ def calcular_cores():
     ])
 
 
-
+# Executa a função correspondente ao modo selecionado
 def calcular():
 
     if modo.get() == "cores":
@@ -678,6 +737,7 @@ def calcular():
         calcular_cores()
 
 
+# Botão que inicia o cálculo
 botao = tk.Button(
     painel,
     text="Calcular resistência",
@@ -699,16 +759,19 @@ botao.place(
 )
 
 
-
+# Define valores iniciais para o modo de cores
 banda1.set("vermelho")
 banda2.set("vermelho")
 multiplicador.set("laranja")
 tolerancia_cores.set("violeta")
 
+# Define a tolerância inicial do modo por valor
 tolerancia_valor.set("dourado")
 
 
+# Começa sem mostrar um resistor
 desenhar_resistor(None)
 
 
+# Mantém a janela aberta
 janela.mainloop()
