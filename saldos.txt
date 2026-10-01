@@ -1,2 +1,5 @@
-& "C:\Program Files\Python314\python.exe" c:/Users/Aluno/Documents/GitHub/Logica_Python/Caixa_Eletrônico/simulador_de_caixa_eletrônico.py;1000
-murilo00;1900
+& "C:\Program Files\Python314\python.exe" c:/Users/Aluno/Documents/GitHub/Logica_Python/Caixa_Eletrônico/simulador_de_caixa_eletrônico.py;701
+murilo00;701
+1;701
+"C:\Program Files\Python314\python.exe" c:/Users/Aluno/Documents/GitHub/Logica_Python/caixa_eletronico/simulador_caixa_eletronico.py;701
+murilo;701
