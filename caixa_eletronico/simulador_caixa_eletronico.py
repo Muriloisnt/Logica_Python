@@ -4,7 +4,10 @@ ARQUIVO = "saldos.txt"
 
 
 def limpar_tela():
-    os.system("cls")
+    if os.name == "nt":
+        os.system("cls")
+    else:
+        os.system("clear")
 
 
 contas = {}
