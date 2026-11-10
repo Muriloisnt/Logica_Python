@@ -1,0 +1,9 @@
+[
+    {
+        "codigo": 2101,
+        "descricao": "Snickers mata sua fome",
+        "quantidade": 100,
+        "estoque_minimo": 5,
+        "preco": 7.99
+    }
+]
